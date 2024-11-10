@@ -1,0 +1,1 @@
+export const AUTH_COOKIE = 'psk-jira-clone-session'
