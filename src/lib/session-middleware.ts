@@ -33,7 +33,6 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
     const session = getCookie(c, AUTH_COOKIE);
-    console.log(session);
 
     if (!session) { 
       return c.json({ error: "Unauthorized" }, 401);
@@ -44,8 +43,6 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const databases = new Databases(client);
     const storage = new Storage(client);
     const user = await account.get();
-
-    console.log(user);
 
     c.set("account", account);
     c.set("databases", databases);

@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Sidebar } from './Sidebar';
 import { usePathname } from 'next/navigation';
-
+    
 export const MobileSidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const pathName = usePathname();
