@@ -34,7 +34,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
 
     const session = getCookie(c, AUTH_COOKIE);
 
-    if (!session) { 
+    if (!session) {
       return c.json({ error: "Unauthorized" }, 401);
     }
     client.setSession(session);

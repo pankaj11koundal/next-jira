@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FcGoogle } from 'react-icons/fc'
-import { FaGithub } from 'react-icons/fa'
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 
 import DottedSeparator from "@/components/dotted-separator";
@@ -30,12 +30,19 @@ export const SignInCard = () => {
     defaultValues: {
       email: "",
       password: "",
-    }
-  })
+    },
+  });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({ json: values });
-  }
+    mutate(
+      { json: values },
+      {
+        onSuccess: () => {
+          form.reset();
+        },
+      }
+    );
+  };
 
   return (
     <Card className="w-full h-full md:w-[487px] border-none shadow-none">
@@ -49,7 +56,7 @@ export const SignInCard = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
-              name='email'
+              name="email"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
@@ -65,7 +72,7 @@ export const SignInCard = () => {
               )}
             />
             <FormField
-              name='password'
+              name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
@@ -113,8 +120,11 @@ export const SignInCard = () => {
         <DottedSeparator />
       </div>
       <CardContent className="p-7 flex items-center justify-center">
-        <p>Don&apos;t have an account?
-          <Link href='/sign-up' className="text-blue-700">&nbsp;Sign Up</Link>
+        <p>
+          Don&apos;t have an account?
+          <Link href="/sign-up" className="text-blue-700">
+            &nbsp;Sign Up
+          </Link>
         </p>
       </CardContent>
     </Card>

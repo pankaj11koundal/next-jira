@@ -37,8 +37,8 @@ const DottedSeparator = ({
           backgroundSize: isHorizontal
             ? `${parseInt(dotSize) + parseInt(gapSize)}px ${height}`
             : `${height} ${parseInt(dotSize) + parseInt(gapSize)}px`,
-            backgroundRepeat: isHorizontal ? 'repeat-x' : 'repeat-y',
-            backgroundPosition: 'center',
+          backgroundRepeat: isHorizontal ? "repeat-x" : "repeat-y",
+          backgroundPosition: "center",
         }}
       ></div>
     </div>

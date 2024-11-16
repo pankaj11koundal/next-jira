@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,

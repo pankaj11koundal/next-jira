@@ -6,10 +6,7 @@ import workspaces from "@/features/workspaces/server/route";
 
 const app = new Hono().basePath("/api");
 
-const routes = app
-    .route("/auth", auth)
-    .route("/workspaces", workspaces);
-
+const routes = app.route("/auth", auth).route("/workspaces", workspaces);
 
 export const GET = handle(app);
 export const POST = handle(app);

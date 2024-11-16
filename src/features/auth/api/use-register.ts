@@ -1,27 +1,36 @@
 import { InferResponseType, InferRequestType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { client } from "@/lib/rpc";
 
-type ResponseType = InferResponseType<(typeof client.api.auth.register)["$post"]>;
+type ResponseType = InferResponseType<
+  (typeof client.api.auth.register)["$post"]
+>;
 type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>;
 
 export const useRegister = () => {
-    const router = useRouter();
-    const queryClient = useQueryClient();
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-    const mutation = useMutation<ResponseType, Error, RequestType>({
-      mutationFn: async ({ json }) => {
-        const resposne = await client.api.auth.register["$post"]({ json });
-        return await resposne.json();
-      },
+  const mutation = useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ json }) => {
+      const response = await client.api.auth.register["$post"]({ json });
+      if (!response.ok) throw new Error("Faild to register user");
+      return await response.json();
+    },
 
-      onSuccess: () => {
-        router.refresh();
-        queryClient.invalidateQueries({ queryKey: ["current"] });
-      },
-    });
+    onSuccess: () => {
+      toast.success("Register successfully");
+      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ["current"] });
+    },
 
-    return mutation;
+    onError: () => {
+      toast.error("Failed to register");
+    },
+  });
+
+  return mutation;
 };
