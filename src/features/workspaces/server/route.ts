@@ -89,7 +89,7 @@ const app = new Hono()
         roles: MemberRole.ADMIN,
       });
 
-      return c.json({ workspace: workspaces });
+      return c.json({ data: workspaces });
     }
   );
 
