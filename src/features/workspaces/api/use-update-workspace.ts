@@ -15,19 +15,19 @@ export const useUpdateWorkspace = () => {
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ form, param }) => {
       const response = await client.api.workspaces[":workspaceId"]["$patch"]({ form, param });
-      if (!response.ok) throw new Error("Workspace creation failed");
+      if (!response.ok) throw new Error("Failed to update workspace");
       return await response.json();
     },
 
     onSuccess: ({ data }) => {
-      toast.success("Workspace created successfully");
+      toast.success("Workspace updated successfully");
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["workspaces"] });
       queryClient.invalidateQueries({ queryKey: ["workspaces", data.$id] });
     },
 
     onError: () => {
-      toast.error("Workspace creation failed");
+      toast.error("Failed to update workspace");
     },
   });
 
