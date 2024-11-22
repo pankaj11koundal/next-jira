@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 import { client } from "@/lib/rpc";
 
-type ResponseType = InferResponseType<(typeof client.api.auth.logout)["$post"]>;
+type ResponseType = InferResponseType<(typeof client.api.auth.logout)["$post"], 200>;
 
 export const useLogout = () => {
   const router = useRouter();
