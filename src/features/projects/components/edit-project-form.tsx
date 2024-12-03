@@ -86,6 +86,7 @@ export const EditProjectForm = ({
       {
         onSuccess: () => {
           form.reset();
+          window.location.href = `/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`;
         },
       }
     );

@@ -14,7 +14,7 @@ const ResponsiveModal = ({
   open,
   onOpenChange,
 }: ResponsiveModalProps) => {
-  const isDesktop = useMedia("(min-width: 1024px");
+  const isDesktop = useMedia("(min-width: 1024px)");
 
 
   if (isDesktop) { 

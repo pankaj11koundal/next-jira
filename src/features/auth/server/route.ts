@@ -7,6 +7,9 @@ import { loginSchema, registerSchema } from "../schemas";
 import { createAdminClient } from "@/lib/appwrite";
 import { AUTH_COOKIE } from "../constants";
 import { sessionMiddleware } from "../../../lib/session-middleware";
+import { Task } from "@/features/tasks/types";
+import { DATABASE_ID, TASKS_ID } from "@/config";
+import { getMember } from "@/features/members/utils";
 
 const app = new Hono()
   .get("/current", sessionMiddleware, (c) => {
@@ -18,6 +21,7 @@ const app = new Hono()
 
     const { account } = await createAdminClient();
     const session = await account.createEmailPasswordSession(email, password);
+
 
     setCookie(c, AUTH_COOKIE, session.secret, {
       path: "/",
