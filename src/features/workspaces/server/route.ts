@@ -19,16 +19,14 @@ import { Workspace } from "../types";
 const app = new Hono()
   .get("/", sessionMiddleware, async (c) => {
     const databases = c.get("databases");
-    const user = c.get('user');
+    const user = c.get("user");
 
-    const members = await databases.listDocuments(
-      DATABASE_ID,
-      MEMBERS_ID,
-      [Query.equal("userId", user.$id)]
-    );
+    const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [
+      Query.equal("userId", user.$id),
+    ]);
 
     if (members.total === 0) {
-      return c.json({data: { documents: [], total: 0 } });
+      return c.json({ data: { documents: [], total: 0 } });
     }
 
     const workspaceIds = members.documents.map((member) => member.workspaceId);
@@ -36,13 +34,50 @@ const app = new Hono()
     const workspaces = await databases.listDocuments(
       DATABASE_ID,
       WORKSPACES_ID,
-      [
-        Query.orderDesc("$createdAt"),
-        Query.contains("$id", workspaceIds)
-      ],
+      [Query.orderDesc("$createdAt"), Query.contains("$id", workspaceIds)]
     );
 
     return c.json({ data: workspaces });
+  })
+  .get("/:workspaceId", sessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const databases = c.get("databases");
+    const { workspaceId } = c.req.param();
+
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
+
+    if (!member) return c.json({ error: "Unauthorized" }, 401);
+
+    const workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId
+    );
+
+    return c.json({ data: workspace });
+  })
+  .get("/:workspaceId/info", sessionMiddleware, async (c) => {
+    const user = c.get("user");
+    const databases = c.get("databases");
+    const { workspaceId } = c.req.param();
+
+    const workspace = await databases.getDocument<Workspace>(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      workspaceId
+    );
+
+    return c.json({ 
+      data: {
+        $id: workspace.$id,
+        name: workspace.name,
+        imageUrl: workspace.imageUrl,
+      } 
+    });
   })
   .post(
     "/",
@@ -103,10 +138,14 @@ const app = new Hono()
 
     const { workspaceId } = c.req.param();
 
-    const member = await getMember({databases, workspaceId, userId: user.$id});
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
 
     if (!member || member.roles !== MemberRole.ADMIN)
-      return c.json({ error: "Unauthorized"}, 401);
+      return c.json({ error: "Unauthorized" }, 401);
 
     const workspace = await databases.updateDocument(
       DATABASE_ID,
@@ -117,119 +156,124 @@ const app = new Hono()
       }
     );
 
-    return c.json({ data: workspace })
+    return c.json({ data: workspace });
   })
-  .post("/:workspaceId/join", sessionMiddleware, zValidator("json", z.object({ code: z.string() })), async (c) => {
-    const { workspaceId } = c.req.param();
-    const { code } = c.req.valid("json");
+  .post(
+    "/:workspaceId/join",
+    sessionMiddleware,
+    zValidator("json", z.object({ code: z.string() })),
+    async (c) => {
+      const { workspaceId } = c.req.param();
+      const { code } = c.req.valid("json");
 
-    const databases = c.get("databases");
-    const user = c.get("user");
+      const databases = c.get("databases");
+      const user = c.get("user");
 
-    const member = await getMember({
-      databases,
-      workspaceId,
-      userId: user.$id,
-    });
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
 
-    if (member) {
-      return c.json({ error: "Already a member" }, 400);
-    }
+      if (member) {
+        return c.json({ error: "Already a member" }, 400);
+      }
 
-    const workspace = await databases.getDocument<Workspace> (
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId,
-    );
+      const workspace = await databases.getDocument<Workspace>(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId
+      );
 
-    if (workspace.inviteCode != code) {
-      return c.json({ error: "Invalid invite code" }, 400);
-    }
+      if (workspace.inviteCode != code) {
+        return c.json({ error: "Invalid invite code" }, 400);
+      }
 
-    await databases.createDocument(
-      DATABASE_ID,
-      MEMBERS_ID,
-      ID.unique(),
-      {
+      await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
         workspaceId,
         userId: user.$id,
         roles: MemberRole.MEMBER,
-      }
-    );
+      });
 
-    return c.json({ data: workspace });
-
-  })
-  .patch("/:workspaceId", sessionMiddleware, zValidator("form", updateWorkspaceSchema), async (c) => {
-    const databases = c.get("databases");
-    const storage = c.get("storage");
-    const user = c.get("user");
-
-    const { workspaceId } = c.req.param();
-    const { name, image } = c.req.valid("form");
-
-    const member = await getMember({
-      databases,
-      workspaceId,
-      userId: user.$id,
-    });
-
-
-    if (!member || member.roles !== MemberRole.ADMIN) {
-      return c.json({ error: "Unauthorized" }, 401);
+      return c.json({ data: workspace });
     }
+  )
+  .patch(
+    "/:workspaceId",
+    sessionMiddleware,
+    zValidator("form", updateWorkspaceSchema),
+    async (c) => {
+      const databases = c.get("databases");
+      const storage = c.get("storage");
+      const user = c.get("user");
 
-    let uploadedImageUrl: string | undefined;
+      const { workspaceId } = c.req.param();
+      const { name, image } = c.req.valid("form");
 
-    if (image instanceof File) {
-      const file = await storage.createFile(
-        IMAGES_BUCKET_ID,
-        ID.unique(),
-        image
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id,
+      });
+
+      if (!member || member.roles !== MemberRole.ADMIN) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      let uploadedImageUrl: string | undefined;
+
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image
+        );
+
+        const arrayBuffer = await storage.getFilePreview(
+          IMAGES_BUCKET_ID,
+          file.$id
+        );
+
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(
+          arrayBuffer
+        ).toString("base64")}`;
+      } else {
+        uploadedImageUrl = image;
+      }
+
+      console.log("line 227: " + uploadedImageUrl?.substring(0, 1000));
+
+      const workspace = await databases.updateDocument(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId,
+        {
+          name,
+          imageUrl: uploadedImageUrl,
+        }
       );
 
-      const arrayBuffer = await storage.getFilePreview(
-        IMAGES_BUCKET_ID,
-        file.$id
-      );
-
-      uploadedImageUrl = `data:image/png;base64,${Buffer.from(
-        arrayBuffer
-      ).toString("base64")}`;
-    } else {
-      uploadedImageUrl = image;
+      return c.json({ data: workspace });
     }
-
-    const workspace = await databases.updateDocument(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId,
-      {
-        name, 
-        imageUrl: uploadedImageUrl
-      }
-    );
-
-    return c.json({ data: workspace });
-  })
+  )
   .delete("/:workspaceId", sessionMiddleware, async (c) => {
     const databases = c.get("databases");
     const user = c.get("user");
 
     const { workspaceId } = c.req.param();
 
-    const member = await getMember({databases, workspaceId, userId: user.$id});
+    const member = await getMember({
+      databases,
+      workspaceId,
+      userId: user.$id,
+    });
 
     if (!member || member.roles !== MemberRole.ADMIN)
-      return c.json({ error: "Unauthorized"}, 401);
+      return c.json({ error: "Unauthorized" }, 401);
 
-    await databases.deleteDocument(
-      DATABASE_ID,
-      WORKSPACES_ID,
-      workspaceId,
-    );
+    await databases.deleteDocument(DATABASE_ID, WORKSPACES_ID, workspaceId);
 
-    return c.json({ data: { $id: workspaceId } })
+    return c.json({ data: { $id: workspaceId } });
   });
 
 export default app;

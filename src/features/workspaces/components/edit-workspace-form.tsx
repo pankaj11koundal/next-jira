@@ -104,15 +104,16 @@ export const EditWorkspaceForm = ({
     };
     mutate(
       { form: finalValues, param: { workspaceId: initialValues.$id } },
-      {
-        onSuccess: () => {
-          form.reset();
-        },
-      }
+      // {
+      //   onSuccess: () => {
+      //     window.location.href = `/workspaces/${initialValues.$id}` 
+      //   }
+      // }
     );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Executed");
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);

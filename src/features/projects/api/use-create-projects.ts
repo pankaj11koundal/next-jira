@@ -1,6 +1,5 @@
 import { InferResponseType, InferRequestType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { client } from "@/lib/rpc";
@@ -9,7 +8,6 @@ type ResponseType = InferResponseType<(typeof client.api.projects)["$post"], 200
 type RequestType = InferRequestType<(typeof client.api.projects)["$post"]>;
 
 export const useCreateProject = () => {
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -21,7 +19,6 @@ export const useCreateProject = () => {
 
     onSuccess: () => {
       toast.success("Project created successfully");
-      router.refresh();
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
 
