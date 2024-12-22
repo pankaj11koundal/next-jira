@@ -66,7 +66,6 @@ const app = new Hono()
     return c.json({ data: workspace });
   })
   .get("/:workspaceId/info", sessionMiddleware, async (c) => {
-    const user = c.get("user");
     const databases = c.get("databases");
     const { workspaceId } = c.req.param();
 
@@ -88,12 +87,6 @@ const app = new Hono()
       const user = c.get("user");
       const databases = c.get("databases");
       const { workspaceId } = c.req.param();
-  
-      const project = await databases.getDocument<Workspace>(
-        DATABASE_ID,
-        WORKSPACES_ID,
-        workspaceId
-      );
   
       const member = await getMember({
         databases,

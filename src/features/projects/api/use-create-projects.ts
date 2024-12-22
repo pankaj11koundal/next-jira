@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { client } from "@/lib/rpc";
 
-type ResponseType = InferResponseType<(typeof client.api.projects)["$post"], 200>;
+type ResponseType = InferResponseType<(typeof client.api.projects)["$post"]>;
 type RequestType = InferRequestType<(typeof client.api.projects)["$post"]>;
 
 export const useCreateProject = () => {
@@ -14,7 +14,7 @@ export const useCreateProject = () => {
     mutationFn: async ({ form }) => {
       const response = await client.api.projects["$post"]({ form });
       if (!response.ok) throw new Error("Failed to create Project");
-      return await response.json( );
+      return await response.json();
     },
 
     onSuccess: () => {

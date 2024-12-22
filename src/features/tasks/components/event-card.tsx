@@ -6,10 +6,11 @@ import { MemberAvatar } from "@/features/members/components/MemberAvatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { TaskStatus } from "../types";
 import { useWorkspaceId } from "@/features/workspaces/hooks/useWorkspaceId";
+import { Member } from "@/features/members/types";
 
 interface EventCardProps {
     title: string;
-    assignee: any
+    assignee: Member
     project: Project;
     status: TaskStatus
     id: string;

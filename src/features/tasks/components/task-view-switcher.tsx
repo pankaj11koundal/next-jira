@@ -8,6 +8,7 @@ import DottedSeparator from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useWorkspaceId } from "@/features/workspaces/hooks/useWorkspaceId";
+import { useProjectId } from "@/features/projects/hooks/useProjectId";
 import { DataFilters } from "./data-filters";
 import { DataTable } from "./data-table";
 import { useTaskFilters } from "../hooks/useTaskFilters";
@@ -31,13 +32,14 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
   });
 
   const workspaceId = useWorkspaceId();
+  const paramProjectId = useProjectId();
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
 
   const { data: tasks, isLoading } = useGetTasks({
     workspaceId,
     status,
     assigneeId,
-    projectId,
+    projectId: projectId || paramProjectId,
     dueDate,
   });
 

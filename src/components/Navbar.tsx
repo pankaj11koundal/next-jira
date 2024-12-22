@@ -1,13 +1,39 @@
+'use client'
+
+import { usePathname } from "next/navigation";
+
 import { UserButton } from "@/features/auth/components/user-button";
 import { MobileSidebar } from "./MobileSidebar";
 
+const pathnameMap = {
+  "tasks": {
+    title: "My Tasks",
+    description: "View all of your tasks here",
+  },
+  "projects": {
+    title: "My Projects",
+    description: "View tasks of your project here",
+  }
+}
+
+const defaultMap = {
+  title: "Home",
+  description: "Monitor all your projects and tasks",
+}
+
 const Navbar = () => {
+  const pathName = usePathname();
+  const pathNameParts = pathName.split("/");
+  const pathNameKey = pathNameParts[3] as keyof typeof pathnameMap;
+
+  const { title, description } = pathnameMap[pathNameKey] || defaultMap;
+
   return (
     <nav className="pt-4 px-6 flex items-center justify-between">
       <div className="flex-col hidden lg:flex">
-        <h1 className="text-2xl font-semibold">Home</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
         <p className="text-muted-foreground">
-          Monitor all your projects and tasks
+          {description}
         </p>
       </div>
       <MobileSidebar />

@@ -1,10 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,7 +28,6 @@ import DottedSeparator from "@/components/dotted-separator";
 import DatePicker from "@/components/DatePicker";
 import { cn } from "@/lib/utils";
 import { useUpdateTasks } from "../api/use-update-tasks";
-import { useWorkspaceId } from "@/features/workspaces/hooks/useWorkspaceId";
 import { MemberAvatar } from "@/features/members/components/MemberAvatar";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { Task, TaskStatus } from "../types";
@@ -48,10 +45,6 @@ export const EditTaskForm = ({
   memberOptions,
   initialValues
 }: EditTaskFormProps) => {
-  const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const workspaceId = useWorkspaceId();
   const { mutate, isPending } = useUpdateTasks();
 
   const form = useForm<z.infer<typeof createTaskSchema>>({

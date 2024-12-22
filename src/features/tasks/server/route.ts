@@ -131,7 +131,6 @@ const app = new Hono()
       const currentUser = c.get("user");
       const databases = c.get("databases");
       const { taskId } = c.req.param();
-      const { users } = await createAdminClient();
 
       const task = await databases.getDocument<Task>(
         DATABASE_ID,
@@ -158,8 +157,6 @@ const app = new Hono()
         MEMBERS_ID,
         task.assigneeId
       );
-
-      const user = await users.get(member.userId);
 
       const assignee = {
         ...member,

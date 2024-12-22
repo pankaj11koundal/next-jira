@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import Image from "next/image";
-import { ArrowLeft, CopyIcon, ImageIcon } from "lucide-react";
+import { ArrowLeft, ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -251,7 +251,7 @@ export const EditProjectForm = ({
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending}
+              disabled={isPending || isDeleteProject}
               onClick={handleDelete}
             >
               Delete Project
