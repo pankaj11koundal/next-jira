@@ -60,6 +60,8 @@ export const EditWorkspaceForm = ({
     "destructive"
   );
 
+  console.log(initialValues.imageUrl);
+
   const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
     resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
@@ -104,16 +106,10 @@ export const EditWorkspaceForm = ({
     };
     mutate(
       { form: finalValues, param: { workspaceId: initialValues.$id } },
-      // {
-      //   onSuccess: () => {
-      //     window.location.href = `/workspaces/${initialValues.$id}` 
-      //   }
-      // }
     );
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Executed");
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("image", file);

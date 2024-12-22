@@ -17,7 +17,7 @@ export const useGetWorkspace = ({ workspaceId }: useGetWorkspaceProps) => {
       if (!response.ok) throw new Error("Failed to fetch workspace");
 
       const { data } = await response.json();
-
+      
       return data;
     },
   });
