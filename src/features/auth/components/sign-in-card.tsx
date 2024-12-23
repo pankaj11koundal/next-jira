@@ -99,7 +99,7 @@ export const SignInCard = () => {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
-          onClick={() => signUpWithGooglegi()}
+          onClick={() => signUpWithGoogle()}
           variant="secondary"
           size="lg"
           className="w-full"
