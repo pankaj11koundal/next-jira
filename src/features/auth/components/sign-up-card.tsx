@@ -27,7 +27,7 @@ import {
 
 import { registerSchema } from "../schemas";
 import { useRegister } from "../api/use-register";
-import { signUpWithGithub } from "@/lib/oauth";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 export const SignUpCard = () => {
   const { mutate, isPending } = useRegister();
