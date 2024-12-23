@@ -9,6 +9,7 @@ import {
   DATABASE_ID,
   IMAGES_BUCKET_ID,
   MEMBERS_ID,
+  PROJECTS_ID,
   TASKS_ID,
   WORKSPACES_ID,
 } from "@/config";
@@ -33,6 +34,14 @@ const app = new Hono()
     }
 
     const workspaceIds = members.documents.map((member) => member.workspaceId);
+    
+      console.log(
+        WORKSPACES_ID,
+        PROJECTS_ID,
+        MEMBERS_ID,
+        TASKS_ID,
+        DATABASE_ID
+      );
 
     const workspaces = await databases.listDocuments(
       DATABASE_ID,
