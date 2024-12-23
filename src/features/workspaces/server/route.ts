@@ -34,15 +34,7 @@ const app = new Hono()
     }
 
     const workspaceIds = members.documents.map((member) => member.workspaceId);
-    
-      console.log(
-        WORKSPACES_ID,
-        PROJECTS_ID,
-        MEMBERS_ID,
-        TASKS_ID,
-        DATABASE_ID
-      );
-
+ 
     const workspaces = await databases.listDocuments(
       DATABASE_ID,
       WORKSPACES_ID,
