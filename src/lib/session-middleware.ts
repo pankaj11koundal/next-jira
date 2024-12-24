@@ -31,6 +31,20 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const client = new Client()
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+        c.res.headers.set(
+          "Access-Control-Allow-Origin",
+          "https://your-frontend-domain.com"
+        ); // Replace with your frontend domain or use '*'
+        c.res.headers.set(
+          "Access-Control-Allow-Methods",
+          "GET, POST, PUT, DELETE, OPTIONS"
+        );
+        c.res.headers.set(
+          "Access-Control-Allow-Headers",
+          "Content-Type, Authorization"
+        );
+        c.res.headers.set("Access-Control-Allow-Credentials", "true");
+
 
     const session = getCookie(c, AUTH_COOKIE);
 
