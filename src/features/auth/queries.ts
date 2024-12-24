@@ -1,8 +1,8 @@
-import { createSessionClient } from "@/lib/appwrite";
+import { createAdminClient } from "@/lib/appwrite";
 
 export const getCurrent = async () => {
   try {
-    const { account } = await createSessionClient();
+    const { account } = await createAdminClient();
 
     return await account.get();
   } catch {
