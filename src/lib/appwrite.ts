@@ -9,6 +9,11 @@ export async function createSessionClient() {
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
+  fetch("https://your-appwrite-domain/v1/sessions", {
+    method: "POST",
+    credentials: "include", // Ensures cookies are sent with cross-origin requests
+  });
+
   const session = cookies().get(AUTH_COOKIE);
 
   if (!session || !session.value) throw new Error("Unauthorized");
