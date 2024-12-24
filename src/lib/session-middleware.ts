@@ -33,7 +33,7 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
         c.res.headers.set(
           "Access-Control-Allow-Origin",
-          "https://your-frontend-domain.com"
+          "https://next-jira-sigma.vercel.app"
         ); // Replace with your frontend domain or use '*'
         c.res.headers.set(
           "Access-Control-Allow-Methods",
